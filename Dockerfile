@@ -4,7 +4,7 @@
 # Run with:
 # docker-compose up
 
-FROM openjdk:8-jre-alpine
+FROM registry.acs.aliyun.com/open/java8:4.0.0
 MAINTAINER nobodyiam<https://github.com/nobodyiam>
 
 COPY eurekaserver-0.0.1-SNAPSHOT.jar /opt/eurekaserver-0.0.1-SNAPSHOT.jar
