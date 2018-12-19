@@ -1,16 +1,27 @@
-# Dockerfile for apollo quick start
-# Build with:
-# docker build -t apollo-quick-start .
-# Run with:
-# docker-compose up
+# Dockerfile for apollo-configservice
+# 1. Copy apollo-configservice-${VERSION}-github.zip to current directory
+# 2. Build with: docker build -t apollo-configservice .
+# 3. Run with: docker run -p 8080:8080 -d -v /tmp/logs:/opt/logs --name apollo-configservice apollo-configservice
 
-FROM registry.acs.aliyun.com/open/java8:4.0.0
-MAINTAINER nobodyiam<https://github.com/nobodyiam>
+FROM openjdk:8-jre-alpine
+MAINTAINER ameizi <sxyx2008@163.com>
 
-COPY eurekaserver-0.0.1-SNAPSHOT.jar /opt/eurekaserver-0.0.1-SNAPSHOT.jar
+ENV VERSION 1.3.0-SNAPSHOT
 
-EXPOSE 8761
+RUN echo "http://mirrors.aliyun.com/alpine/v3.8/main" > /etc/apk/repositories \
+    && echo "http://mirrors.aliyun.com/alpine/v3.8/community" >> /etc/apk/repositories \
+    && apk update upgrade \
+    && apk add --no-cache procps unzip curl bash tzdata \
+    && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+    && echo "Asia/Shanghai" > /etc/timezone
 
-WORKDIR /opt
+ADD apollo-configservice-${VERSION}-github.zip /apollo-configservice/apollo-configservice-${VERSION}-github.zip
 
-CMD ["java -jar eurekaserver-0.0.1-SNAPSHOT.jar"]
+RUN unzip /apollo-configservice/apollo-configservice-${VERSION}-github.zip -d /apollo-configservice \
+    && rm -rf /apollo-configservice/apollo-configservice-${VERSION}-github.zip \
+    && sed -i '$d' /apollo-configservice/scripts/startup.sh \
+    && echo "tail -f /dev/null" >> /apollo-configservice/scripts/startup.sh
+
+EXPOSE 8080
+
+CMD ["/apollo-configservice/scripts/startup.sh"]
