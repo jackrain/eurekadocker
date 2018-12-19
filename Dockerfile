@@ -16,9 +16,7 @@ RUN echo "http://mirrors.aliyun.com/alpine/v3.6/main" > /etc/apk/repositories \
     && apk update upgrade \
     && apk add --no-cache curl bash \
     && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-    && echo "Asia/Shanghai" > /etc/timezone \
-    && sed -i'.bak' '/db_url/s/localhost/apollo-db/g' /apollo-quick-start/demo.sh \
-    && sed -i "s/exit 0;/tail -f \/dev\/null/g" /apollo-quick-start/demo.sh
+    && echo "Asia/Shanghai" > /etc/timezone
 
 WORKDIR /opt
 
