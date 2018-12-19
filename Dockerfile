@@ -7,13 +7,9 @@
 FROM openjdk:8-jre-alpine
 MAINTAINER nobodyiam<https://github.com/nobodyiam>
 
-COPY apollo-all-in-one.jar /apollo-quick-start/apollo-all-in-one.jar
-COPY client /apollo-quick-start/client
-COPY demo.sh /apollo-quick-start/demo.sh
-COPY portal/apollo-portal.conf /apollo-quick-start/portal/apollo-portal.conf
-COPY service/apollo-service.conf /apollo-quick-start/service/apollo-service.conf
+COPY eurekaserver-0.0.1-SNAPSHOT.jar /opt/eurekaserver-0.0.1-SNAPSHOT.jar
 
-EXPOSE 8070 8080
+EXPOSE 8761
 
 RUN echo "http://mirrors.aliyun.com/alpine/v3.6/main" > /etc/apk/repositories \
     && echo "http://mirrors.aliyun.com/alpine/v3.6/community" >> /etc/apk/repositories \
@@ -24,4 +20,6 @@ RUN echo "http://mirrors.aliyun.com/alpine/v3.6/main" > /etc/apk/repositories \
     && sed -i'.bak' '/db_url/s/localhost/apollo-db/g' /apollo-quick-start/demo.sh \
     && sed -i "s/exit 0;/tail -f \/dev\/null/g" /apollo-quick-start/demo.sh
 
-CMD ["java -jar /eureka.jar"]
+WORKDIR /opt
+
+CMD ["java -jar eurekaserver-0.0.1-SNAPSHOT.jar"]
